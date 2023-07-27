@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  trading-app-backend:
+    container_name: trading_app_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    environment:
+      - SERVER_HOST=https://localhost
+      - PROJECT_NAME=trading_app_backend
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://user:12345@postgresql_db:5432/db
+      - SQLALCHEMY_MAX_POOL_OVERFLOW=20
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app:/app
+    networks:
+      - development
+
+  database:
+    container_name: postgresql_db # konteinerio vardas kur sukasi db posgreSQL
+    image: postgres:15
+    env_file:
+      - db.env
+    volumes:
+      - postgre:/var/lib/postgresql/data
+    networks:
+      - development
+    ports:
+      - "5432:5432"
+
+networks:
+  development:
+
+volumes:
+  postgre:
